@@ -1,0 +1,275 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net (Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- REUSABLE SECURITY HELPERS ---
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function hasUserDoc() {
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function getUserRole() {
+      return hasUserDoc() ? getUserData().role : '';
+    }
+
+    function isSuperAdmin() {
+      return isSignedIn() && (
+        (request.auth.token.email == "livinglsuccess@gmail.com") ||
+        (hasUserDoc() && getUserRole() == "Super Admin")
+      );
+    }
+
+    function isSchoolAdmin() {
+      return isSuperAdmin() || (hasUserDoc() && (getUserRole() == "School Administrator" || getUserRole() == "Principal" || getUserRole() == "Vice Principal"));
+    }
+
+    function isTeacher() {
+      return isSchoolAdmin() || (hasUserDoc() && (getUserRole() == "Teacher" || getUserRole() == "Class Teacher" || getUserRole() == "Subject Teacher"));
+    }
+
+    function isStudent() {
+      return isSignedIn() && hasUserDoc() && getUserRole() == "Student";
+    }
+
+    function isParent() {
+      return isSignedIn() && hasUserDoc() && getUserRole() == "Parent";
+    }
+
+    // --- COLLECTION RULES ---
+
+    // 1. Schools
+    match /schools/{schoolId} {
+      allow read: if isSignedIn();
+      allow write: if isSuperAdmin();
+    }
+
+    // 2. Users
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isSchoolAdmin());
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && (request.auth.uid == userId || isSchoolAdmin());
+      allow delete: if isSuperAdmin();
+    }
+
+    // 3. Teachers
+    match /teachers/{teacherId} {
+      allow read: if isSignedIn();
+      allow write: if isSchoolAdmin();
+    }
+
+    // 4. Students
+    match /students/{studentId} {
+      allow read: if isSignedIn();
+      allow write: if isSchoolAdmin();
+    }
+
+    // 5. Parents
+    match /parents/{parentId} {
+      allow read: if isSignedIn();
+      allow write: if isSchoolAdmin();
+    }
+
+    // 6. Classes
+    match /classes/{classId} {
+      allow read: if isSignedIn();
+      allow write: if isSchoolAdmin();
+    }
+
+    // 7. Subjects
+    match /subjects/{subjectId} {
+      allow read: if isSignedIn();
+      allow write: if isSchoolAdmin();
+    }
+
+    // 8. Curriculum
+    match /curriculum/{curriculumId} {
+      allow read: if isSignedIn();
+      allow write: if isTeacher();
+    }
+
+    // 9. Lesson Notes
+    match /lesson_notes/{noteId} {
+      allow read: if isSignedIn();
+      allow create, update: if isTeacher();
+      allow delete: if isSchoolAdmin();
+    }
+
+    // 10. Assignments & 11. Homework
+    match /assignments/{assignmentId} {
+      allow read: if isSignedIn();
+      allow create, update: if isTeacher();
+      allow delete: if isSchoolAdmin();
+    }
+
+    match /homework/{homeworkId} {
+      allow read: if isSignedIn();
+      allow create, update: if isTeacher();
+      allow delete: if isSchoolAdmin();
+    }
+
+    // 12. Attendance
+    match /attendance/{attendanceId} {
+      allow read: if isSignedIn();
+      allow create, update: if isTeacher();
+      allow delete: if isSchoolAdmin();
+    }
+
+    // 13. CBT Exams, 14. Exam Questions, 15. Exam Results
+    match /cbt_exams/{examId} {
+      allow read: if isSignedIn();
+      allow create, update: if isTeacher();
+      allow delete: if isSchoolAdmin();
+    }
+
+    match /exam_questions/{questionId} {
+      allow read: if isSignedIn();
+      allow create, update: if isTeacher();
+      allow delete: if isSchoolAdmin();
+    }
+
+    match /exam_results/{resultId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isTeacher();
+    }
+
+    // 16. Continuous Assessment
+    match /continuous_assessment/{caId} {
+      allow read: if isSignedIn();
+      allow create, update: if isTeacher();
+      allow delete: if isSchoolAdmin();
+    }
+
+    // 17. Report Cards
+    match /report_cards/{reportId} {
+      allow read: if isSignedIn();
+      allow create, update: if isTeacher();
+      allow delete: if isSchoolAdmin();
+    }
+
+    // 18. Fees, 19. Payments, 20. Receipts
+    match /fees/{feeId} {
+      allow read: if isSignedIn();
+      allow write: if isSchoolAdmin();
+    }
+
+    match /payments/{paymentId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isSchoolAdmin();
+    }
+
+    match /receipts/{receiptId} {
+      allow read: if isSignedIn();
+      allow write: if isSchoolAdmin();
+    }
+
+    // 21. Staff & 22. Departments
+    match /staff/{staffId} {
+      allow read: if isSignedIn();
+      allow write: if isSchoolAdmin();
+    }
+
+    match /departments/{departmentId} {
+      allow read: if isSignedIn();
+      allow write: if isSchoolAdmin();
+    }
+
+    // 23. Notifications & 24. Messages
+    match /notifications/{notificationId} {
+      allow read: if isSignedIn();
+      allow create: if isTeacher();
+      allow update, delete: if isSchoolAdmin();
+    }
+
+    match /messages/{messageId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isSchoolAdmin();
+    }
+
+    // 25. Events & 26. Calendar
+    match /events/{eventId} {
+      allow read: if isSignedIn();
+      allow write: if isSchoolAdmin();
+    }
+
+    match /calendar/{calendarId} {
+      allow read: if isSignedIn();
+      allow write: if isSchoolAdmin();
+    }
+
+    // 27. Website Pages
+    match /website_pages/{pageId} {
+      allow read: if true; // Public viewable website
+      allow write: if isSchoolAdmin();
+    }
+
+    // 28. Subscriptions
+    match /subscription/{subscriptionId} {
+      allow read: if isSignedIn();
+      allow write: if isSuperAdmin();
+    }
+
+    // 29. Roles & 30. Permissions
+    match /roles/{roleId} {
+      allow read: if isSignedIn();
+      allow write: if isSuperAdmin();
+    }
+
+    match /permissions/{permissionId} {
+      allow read: if isSignedIn();
+      allow write: if isSuperAdmin();
+    }
+
+    // 31. Audit Logs & 32. Activity Logs
+    match /audit_logs/{logId} {
+      allow read: if isSuperAdmin();
+      allow create: if isSignedIn();
+      allow update, delete: if false;
+    }
+
+    match /activity_logs/{logId} {
+      allow read: if isSchoolAdmin();
+      allow create: if isSignedIn();
+      allow update, delete: if false;
+    }
+
+    // 33. Settings
+    match /settings/{settingId} {
+      allow read: if isSignedIn();
+      allow write: if isSchoolAdmin();
+    }
+
+    // 34. AI Requests
+    match /ai_requests/{requestId} {
+      allow read: if isSignedIn();
+      allow create: if isTeacher();
+      allow update, delete: if isSchoolAdmin();
+    }
+
+    // 35. Downloads
+    match /downloads/{downloadId} {
+      allow read: if isSignedIn();
+      allow write: if isSchoolAdmin();
+    }
+  }
+}

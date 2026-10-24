@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>LIVINGSTONEEDU — School Management & AI Platform</title>
+    <meta
+      name="description"
+      content="LIVINGSTONEEDU is a Nigerian school-management SaaS platform with AI lesson notes, exam generation, report cards and multi-role portals for admins, teachers, students and parents."
+    />
+    <link rel="canonical" href="https://livingstoneedu.name.ng/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="LIVINGSTONEEDU — School Management & AI Platform" />
+    <meta
+      property="og:description"
+      content="LIVINGSTONEEDU is a Nigerian school-management SaaS platform with AI lesson notes, exam generation, report cards and multi-role portals for admins, teachers, students and parents."
+    />
+    <meta property="og:url" content="https://livingstoneedu.name.ng/" />
+    <meta property="og:site_name" content="LIVINGSTONEEDU" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="LIVINGSTONEEDU — School Management & AI Platform" />
+    <meta
+      name="twitter:description"
+      content="LIVINGSTONEEDU is a Nigerian school-management SaaS platform with AI lesson notes, exam generation, report cards and multi-role portals for admins, teachers, students and parents."
+    />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "LIVINGSTONEEDU",
+      "url": "https://livingstoneedu.name.ng",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "All",
+      "description": "LIVINGSTONEEDU is a Nigerian school-management SaaS platform with AI lesson notes, exam generation, report cards and multi-role portals for admins, teachers, students and parents.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "NGN"
+      }
+    }
+    </script>
+    <meta name="theme-color" content="#4f46e5" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="icon" type="image/png" sizes="64x64" href="./favicon-64.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="LivingstoneEDU" />
+    <script>
+      // Ignore WebSocket errors per HMR disabled environment constraints
+      window.addEventListener("unhandledrejection", (event) => {
+        const msg = (event && (event.reason?.message || event.reason)) ? String(event.reason?.message || event.reason) : "";
+        if (msg.includes("WebSocket") || msg.includes("vite")) {
+          event.preventDefault();
+          event.stopImmediatePropagation?.();
+        }
+      });
+      window.addEventListener("error", (event) => {
+        const msg = event?.message ? String(event.message) : "";
+        if (msg.includes("WebSocket") || msg.includes("vite")) {
+          event.preventDefault();
+          event.stopImmediatePropagation?.();
+        }
+      });
+
+      try {
+        window.__livingstoneInstallPrompt = null;
+        window.addEventListener("beforeinstallprompt", (event) => {
+          event.preventDefault();
+          window.__livingstoneInstallPrompt = event;
+          window.dispatchEvent(new CustomEvent("app:installable"));
+        });
+        window.addEventListener("appinstalled", () => {
+          window.__livingstoneInstallPrompt = null;
+          window.dispatchEvent(new CustomEvent("app:installed"));
+        });
+      } catch (err) {
+        console.warn("PWA install keying unavailable", err);
+      }
+
+      // Enforce dark theme on document root to avoid white loading screen flash
+      try {
+        var savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "light") {
+          document.documentElement.classList.remove("dark");
+        } else {
+          document.documentElement.classList.add("dark");
+        }
+      } catch (e) {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
+    <style>
+      html, body {
+        background-color: #020617;
+        color: #f8fafc;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+      }
+      #root {
+        background-color: #020617;
+        min-height: 100vh;
+      }
+      @keyframes livingstonePulse {
+        0%, 100% { opacity: 0.6; transform: scale(0.98); }
+        50% { opacity: 1; transform: scale(1.02); }
+      }
+      @keyframes livingstoneBar {
+        0% { transform: translateX(-100%); }
+        50% { transform: translateX(20%); }
+        100% { transform: translateX(200%); }
+      }
+    </style>
+  </head>
+  <body class="bg-slate-950 text-slate-100">
+    <div id="app-preloader" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#020617 0%,#0f172a 50%,#020617 100%);color:#fff;font-family:system-ui,-apple-system,sans-serif;z-index:9999;transition:opacity 0.25s ease-out;">
+      <div style="width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 25px -5px rgba(79,70,229,0.5);margin-bottom:16px;animation:livingstonePulse 2s infinite ease-in-out;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      </div>
+      <div style="font-weight:900;font-size:16px;letter-spacing:-0.02em;margin-bottom:6px;">LIVINGSTONEEDU</div>
+      <div id="preloader-status" style="font-size:11px;color:#94a3b8;margin-bottom:16px;">Loading School Management Portal...</div>
+      <div style="width:160px;height:4px;border-radius:9999px;background:#1e293b;overflow:hidden;position:relative;">
+        <div style="position:absolute;left:0;top:0;height:100%;width:65%;border-radius:9999px;background:linear-gradient(90deg,#4f46e5,#06b6d4);animation:livingstoneBar 1.8s infinite ease-in-out;"></div>
+      </div>
+      <button id="preloader-retry" onclick="var p=document.getElementById('app-preloader');if(p)p.remove();" style="display:none;margin-top:20px;padding:9px 18px;background:#4f46e5;color:#fff;border:none;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(79,70,229,0.4);">
+        Tap to Launch Portal
+      </button>
+    </div>
+    <div id="root"></div>
+    <script>
+      // Preloader safety auto-clear: ensure preloader vanishes quickly and never locks screen
+      (function() {
+        function dismissPreloader() {
+          var p = document.getElementById('app-preloader');
+          if (p && p.parentNode) {
+            p.style.opacity = '0';
+            p.style.pointerEvents = 'none';
+            setTimeout(function() {
+              if (p && p.parentNode) p.remove();
+            }, 180);
+          }
+        }
+        window.addEventListener('DOMContentLoaded', function() {
+          setTimeout(dismissPreloader, 400);
+        });
+        setTimeout(dismissPreloader, 800);
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

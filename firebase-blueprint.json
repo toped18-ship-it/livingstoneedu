@@ -1,0 +1,306 @@
+{
+  "entities": {
+    "School": {
+      "title": "School",
+      "description": "Tenant school entity in LIVINGSTONEEDU multi-tenant system",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "logo": { "type": "string" },
+        "address": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "website": { "type": "string" },
+        "principal": { "type": "string" },
+        "academicSession": { "type": "string" },
+        "currentTerm": { "type": "string" },
+        "currentWeek": { "type": "string" },
+        "subscription": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email"]
+    },
+    "User": {
+      "title": "User",
+      "description": "Authenticated user profile entity",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "schoolId": { "type": "string" },
+        "role": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "profilePhoto": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "lastLogin": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "Student record in a school",
+      "type": "object",
+      "properties": {
+        "studentId": { "type": "string" },
+        "admissionNumber": { "type": "string" },
+        "fullName": { "type": "string" },
+        "gender": { "type": "string" },
+        "dateOfBirth": { "type": "string" },
+        "class": { "type": "string" },
+        "arm": { "type": "string" },
+        "parentId": { "type": "string" },
+        "address": { "type": "string" },
+        "medicalInfo": { "type": "string" },
+        "passport": { "type": "string" },
+        "attendancePercentage": { "type": "number" },
+        "performance": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["studentId", "fullName", "class"]
+    },
+    "Teacher": {
+      "title": "Teacher",
+      "description": "Faculty and teaching staff profile",
+      "type": "object",
+      "properties": {
+        "teacherId": { "type": "string" },
+        "employeeNumber": { "type": "string" },
+        "fullName": { "type": "string" },
+        "qualification": { "type": "string" },
+        "department": { "type": "string" },
+        "subjects": { "type": "string" },
+        "classes": { "type": "string" },
+        "employmentDate": { "type": "string" },
+        "passport": { "type": "string" },
+        "signature": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["teacherId", "fullName"]
+    },
+    "Parent": {
+      "title": "Parent",
+      "description": "Parent or guardian entity",
+      "type": "object",
+      "properties": {
+        "parentId": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "occupation": { "type": "string" }
+      },
+      "required": ["parentId", "fullName"]
+    },
+    "Class": {
+      "title": "Class",
+      "description": "Academic class or grade level",
+      "type": "object",
+      "properties": {
+        "classId": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "classTeacher": { "type": "string" }
+      },
+      "required": ["classId", "name"]
+    },
+    "Subject": {
+      "title": "Subject",
+      "description": "Academic subject taught in school",
+      "type": "object",
+      "properties": {
+        "subjectId": { "type": "string" },
+        "subjectName": { "type": "string" },
+        "subjectCode": { "type": "string" },
+        "class": { "type": "string" },
+        "teacher": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["subjectName", "subjectCode"]
+    },
+    "Curriculum": {
+      "title": "Curriculum",
+      "description": "National educational syllabus (NERDC, WAEC, NECO)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "framework": { "type": "string" },
+        "title": { "type": "string" },
+        "status": { "type": "string" }
+      }
+    },
+    "LessonNote": {
+      "title": "LessonNote",
+      "description": "AI-generated or manual lesson note",
+      "type": "object",
+      "properties": {
+        "noteId": { "type": "string" },
+        "subject": { "type": "string" },
+        "class": { "type": "string" },
+        "term": { "type": "string" },
+        "week": { "type": "string" },
+        "topic": { "type": "string" },
+        "objectives": { "type": "string" },
+        "teacher": { "type": "string" },
+        "aiGenerated": { "type": "boolean" },
+        "createdDate": { "type": "string" }
+      },
+      "required": ["subject", "class", "topic"]
+    },
+    "Assignment": {
+      "title": "Assignment",
+      "description": "Student assignment or homework",
+      "type": "object",
+      "properties": {
+        "assignmentId": { "type": "string" },
+        "title": { "type": "string" },
+        "subject": { "type": "string" },
+        "class": { "type": "string" },
+        "deadline": { "type": "string" }
+      }
+    },
+    "Attendance": {
+      "title": "Attendance",
+      "description": "Daily student or teacher attendance log",
+      "type": "object",
+      "properties": {
+        "attendanceId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "date": { "type": "string" },
+        "status": { "type": "string" },
+        "timeIn": { "type": "string" },
+        "timeOut": { "type": "string" },
+        "teacher": { "type": "string" }
+      }
+    },
+    "CbtExam": {
+      "title": "CbtExam",
+      "description": "Computer Based Test exam record",
+      "type": "object",
+      "properties": {
+        "examId": { "type": "string" },
+        "title": { "type": "string" },
+        "class": { "type": "string" },
+        "subject": { "type": "string" },
+        "duration": { "type": "number" },
+        "status": { "type": "string" }
+      }
+    },
+    "ContinuousAssessment": {
+      "title": "ContinuousAssessment",
+      "description": "Continuous Assessment (CA) scores",
+      "type": "object",
+      "properties": {
+        "caId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "subject": { "type": "string" },
+        "test1": { "type": "number" },
+        "test2": { "type": "number" },
+        "assignment": { "type": "number" },
+        "project": { "type": "number" },
+        "attendance": { "type": "number" },
+        "caTotal": { "type": "number" }
+      }
+    },
+    "ReportCard": {
+      "title": "ReportCard",
+      "description": "Terminal academic report card",
+      "type": "object",
+      "properties": {
+        "reportId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "class": { "type": "string" },
+        "term": { "type": "string" },
+        "caTotal": { "type": "number" },
+        "examTotal": { "type": "number" },
+        "total": { "type": "number" },
+        "grade": { "type": "string" },
+        "remark": { "type": "string" },
+        "position": { "type": "string" }
+      }
+    },
+    "Fee": {
+      "title": "Fee",
+      "description": "Financial fee structure item",
+      "type": "object",
+      "properties": {
+        "feeId": { "type": "string" },
+        "feeType": { "type": "string" },
+        "amount": { "type": "number" },
+        "class": { "type": "string" }
+      }
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Fee payment record",
+      "type": "object",
+      "properties": {
+        "paymentId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "amount": { "type": "number" },
+        "paymentMethod": { "type": "string" },
+        "receiptNumber": { "type": "string" },
+        "paymentDate": { "type": "string" }
+      }
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "Push notification or announcement",
+      "type": "object",
+      "properties": {
+        "notificationId": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "targetRole": { "type": "string" },
+        "date": { "type": "string" }
+      }
+    },
+    "WebsitePage": {
+      "title": "WebsitePage",
+      "description": "School website builder page",
+      "type": "object",
+      "properties": {
+        "pageId": { "type": "string" },
+        "title": { "type": "string" },
+        "slug": { "type": "string" },
+        "isPublished": { "type": "boolean" }
+      }
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "System security audit log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "method": { "type": "string" },
+        "path": { "type": "string" },
+        "status": { "type": "number" },
+        "user": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/schools/{schoolId}": { "schema": "School", "description": "School tenants" },
+    "/users/{userId}": { "schema": "User", "description": "System users" },
+    "/teachers/{teacherId}": { "schema": "Teacher", "description": "Teachers" },
+    "/students/{studentId}": { "schema": "Student", "description": "Students" },
+    "/parents/{parentId}": { "schema": "Parent", "description": "Parents" },
+    "/classes/{classId}": { "schema": "Class", "description": "Classes" },
+    "/subjects/{subjectId}": { "schema": "Subject", "description": "Subjects" },
+    "/curriculum/{curriculumId}": { "schema": "Curriculum", "description": "Curriculum" },
+    "/lesson_notes/{noteId}": { "schema": "LessonNote", "description": "Lesson Notes" },
+    "/assignments/{assignmentId}": { "schema": "Assignment", "description": "Assignments" },
+    "/attendance/{attendanceId}": { "schema": "Attendance", "description": "Attendance" },
+    "/cbt_exams/{examId}": { "schema": "CbtExam", "description": "CBT Exams" },
+    "/continuous_assessment/{caId}": { "schema": "ContinuousAssessment", "description": "Continuous Assessment" },
+    "/report_cards/{reportId}": { "schema": "ReportCard", "description": "Report Cards" },
+    "/fees/{feeId}": { "schema": "Fee", "description": "Fee Invoices" },
+    "/payments/{paymentId}": { "schema": "Payment", "description": "Payments" },
+    "/notifications/{notificationId}": { "schema": "Notification", "description": "Notifications" },
+    "/website_pages/{pageId}": { "schema": "WebsitePage", "description": "Website Builder Pages" },
+    "/audit_logs/{logId}": { "schema": "AuditLog", "description": "Audit Logs" }
+  }
+}

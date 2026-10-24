@@ -1,0 +1,11 @@
+{
+  "projectId": "livingstoneedu-1ef57",
+  "appId": "1:862725103424:web:dd47f90a610e60d93424a5",
+  "apiKey": "AIzaSyDFWBa-XQ5Ppz8aAcChO8U5uWQ5gMRrBRM",
+  "authDomain": "livingstoneedu-1ef57.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "livingstoneedu-1ef57.firebasestorage.app",
+  "messagingSenderId": "862725103424",
+  "measurementId": "G-MLJ844W1NY",
+  "databaseURL": "https://livingstoneedu-1ef57-default-rtdb.firebaseio.com"
+}

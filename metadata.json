@@ -1,0 +1,6 @@
+{
+  "name": "LIVINGSTONEEDU",
+  "description": "Comprehensive SaaS School Management Platform with AI Lesson Notes, AI Exam Generator, Automated Report Cards, and Multi-role Portals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
