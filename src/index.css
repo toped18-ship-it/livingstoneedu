@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  background-color: #020617;
+  color: #f8fafc;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  background-color: #020617;
+  color: #f8fafc;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #020617;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+img, svg, video, canvas, audio, iframe, embed, object {
+  max-width: 100%;
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.18);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes loading-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 5s ease-in-out infinite;
+}
+
+.animate-glow-pulse-delayed {
+  animation: glow-pulse 6s ease-in-out 1.5s infinite;
+}
+
+.animate-float {
+  animation: float 3.5s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 14s linear infinite;
+}
+
+.animate-twinkle {
+  animation: twinkle 2.4s ease-in-out infinite;
+}
+
+.animate-twinkle-delayed {
+  animation: twinkle 2.8s ease-in-out 1.2s infinite;
+}
+
+.animate-loading-progress {
+  animation: loading-progress 5.5s ease-in-out forwards;
+}
+
+.animate-shimmer {
+  animation: shimmer 1.6s linear infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out both;
+}
