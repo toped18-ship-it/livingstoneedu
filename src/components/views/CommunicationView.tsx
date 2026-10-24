@@ -160,11 +160,6 @@ export const CommunicationView: React.FC<CommunicationViewProps> = ({
   const [editTemplate, setEditTemplate] = useState("");
   const [editApiKey, setEditApiKey] = useState("");
 
-  // Test message state
-  const [testRecipient, setTestRecipient] = useState("");
-  const [testingChannelId, setTestingChannelId] = useState<string | null>(null);
-  const [isTesting, setIsTesting] = useState(false);
-
   const showToast = (text: string, ok = true) => {
     setToastMsg({ text, ok });
     setTimeout(() => setToastMsg(null), 4000);
@@ -246,7 +241,6 @@ export const CommunicationView: React.FC<CommunicationViewProps> = ({
     setEditSenderNumber(channel.senderNumber || "");
     setEditTemplate(channel.templateName || "");
     setEditApiKey("••••••••••••••••••••");
-    setTestRecipient(channel.id === "email" ? "admin@livingstone.edu.ng" : "+2347067048471");
   };
 
   // Save Channel Configuration
@@ -277,34 +271,6 @@ export const CommunicationView: React.FC<CommunicationViewProps> = ({
       }
     } catch {
       showToast("Failed to save integration settings.", false);
-    }
-  };
-
-  // Send Test Message
-  const handleSendTestMessage = async (channelId: string) => {
-    setIsTesting(true);
-    setTestingChannelId(channelId);
-    try {
-      const res = await fetch("/api/communication/test", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          channelId,
-          recipient: testRecipient,
-          message: `Integration verified! Test dispatched from LivingstoneEDU ${channels[channelId]?.name}.`,
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        showToast(data.message || "✓ Test dispatch successful!");
-      } else {
-        showToast(data.message || "Test dispatch failed.", false);
-      }
-    } catch {
-      showToast("Network error executing channel test.", false);
-    } finally {
-      setIsTesting(false);
-      setTestingChannelId(null);
     }
   };
 
@@ -512,7 +478,7 @@ export const CommunicationView: React.FC<CommunicationViewProps> = ({
                 Multi-Channel Institutional Integration Matrix
               </p>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                Each communication channel below is integrated with our cloud dispatch backend. You can toggle channels on/off, customize sender IDs, set API credentials, and run instant delivery tests.
+                Each communication channel below is integrated with our cloud dispatch backend. You can toggle channels on/off, customize sender IDs, and set API credentials.
               </p>
             </div>
           </div>
@@ -657,26 +623,13 @@ export const CommunicationView: React.FC<CommunicationViewProps> = ({
                   </div>
 
                   {/* Action buttons */}
-                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
+                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center">
                     <button
                       type="button"
                       onClick={() => openConfigModal(ch)}
-                      className="flex-1 py-1.5 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                      className="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                     >
-                      <Settings className="w-3.5 h-3.5" /> Configure
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSendTestMessage(ch.id)}
-                      disabled={isTesting && testingChannelId === ch.id}
-                      className="py-1.5 px-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
-                    >
-                      {isTesting && testingChannelId === ch.id ? (
-                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      ) : (
-                        <Send className="w-3.5 h-3.5" />
-                      )}
-                      Test
+                      <Settings className="w-3.5 h-3.5" /> Configure Channel
                     </button>
                   </div>
                 </div>
@@ -1046,28 +999,6 @@ export const CommunicationView: React.FC<CommunicationViewProps> = ({
                     onChange={(e) => setEditApiKey(e.target.value)}
                     className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-mono text-slate-900 dark:text-white"
                   />
-                </div>
-              </div>
-
-              {/* Test section inside modal */}
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
-                <span className="text-[10px] font-bold uppercase text-slate-400">Quick Channel Test</span>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={testRecipient}
-                    onChange={(e) => setTestRecipient(e.target.value)}
-                    placeholder="Recipient phone or email..."
-                    className="flex-1 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleSendTestMessage(editingChannel.id)}
-                    disabled={isTesting}
-                    className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs"
-                  >
-                    Test Send
-                  </button>
                 </div>
               </div>
 

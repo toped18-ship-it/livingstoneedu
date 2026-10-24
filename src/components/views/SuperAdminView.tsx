@@ -3016,7 +3016,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                       <h3 className="text-base font-black text-slate-900 dark:text-white">
                         {activeSubItem === "firestore" ? "Firestore Collections" : activeSubItem === "realtime" ? "Realtime Database Paths" : "Cloud Storage Bucket"}
                       </h3>
-                      <button onClick={() => showToast("✓ Connectivity verified — all services operational")} className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold">Test Connection</button>
+                      <button onClick={() => showToast("✓ Connectivity verified — all services operational")} className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold">Verify Connection</button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                       {(activeSubItem === "firestore"
@@ -3622,9 +3622,9 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                             window.open(target, "_blank", "noopener,noreferrer");
                           }}
                           className="px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors"
-                          title="Open link in a new tab to test"
+                          title="Open link in a new tab"
                         >
-                          <ExternalLink className="w-3.5 h-3.5 text-slate-500" /> Test Link
+                          <ExternalLink className="w-3.5 h-3.5 text-slate-500" /> Open Link
                         </button>
 
                         <button

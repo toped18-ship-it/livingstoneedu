@@ -400,10 +400,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     setGmailStatus(null);
     try {
       const res = await fetch("/api/gmail/test", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }).then((r) => r.json());
-      setGmailStatus({ type: res.success ? "success" : "error", text: res.message || "Test failed." });
+      setGmailStatus({ type: res.success ? "success" : "error", text: res.message || "Verification failed." });
       if (res.success) setGmailConfig((prev) => ({ ...prev, connected: true, profileEmail: res.profileEmail || prev.profileEmail }));
     } catch (e) {
-      setGmailStatus({ type: "error", text: "Gmail test request failed." });
+      setGmailStatus({ type: "error", text: "Gmail verification request failed." });
     }
   };
 
@@ -897,7 +897,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         rel="noreferrer"
                         className="px-2.5 py-1 rounded-lg bg-red-600/10 text-red-600 dark:text-red-400 hover:bg-red-600/20 font-bold text-[10px] flex items-center gap-1"
                       >
-                        <ExternalLink className="w-3 h-3" /> Test Link
+                        <ExternalLink className="w-3 h-3" /> Open Link
                       </a>
                     )}
                   </div>
@@ -1535,7 +1535,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 disabled:opacity-40 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-sky-600/30"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
-                    Test Connection
+                    Verify Connection
                   </button>
                   {gmailConfig.connected && (
                     <button

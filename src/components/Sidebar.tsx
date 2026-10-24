@@ -63,7 +63,6 @@ import {
    ClipboardList,
    FileBadge,
    Wallet,
-   Activity,
 } from "lucide-react";
 import { ClearDataButton } from "./ClearDataButton";
 
@@ -76,7 +75,6 @@ interface SidebarProps {
   onLogout?: () => void;
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
-  onOpenDiagnostics?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -88,7 +86,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onLogout,
   isMobileOpen = false,
   onCloseMobile,
-  onOpenDiagnostics,
 }) => {
   const [internalCollapsed, setInternalCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -1535,19 +1532,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Footer Controls */}
       <div className="pt-3 border-t border-slate-800 space-y-1">
-        {onOpenDiagnostics && (
-          <button
-            onClick={onOpenDiagnostics}
-            title={isCollapsed ? "System Diagnostics Suite" : undefined}
-            className={`w-full flex items-center ${
-              isCollapsed ? "justify-center px-0" : "gap-3 px-3"
-            } py-2 rounded-lg text-xs font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-all cursor-pointer`}
-          >
-            <Activity className="w-4 h-4 text-emerald-400 flex-shrink-0 animate-pulse" />
-            {!isCollapsed && <span>System Diagnostics</span>}
-          </button>
-        )}
-
         <button
           onClick={() => onSelectTab("support")}
           title={isCollapsed ? "Support & System Docs" : undefined}

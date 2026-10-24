@@ -32,7 +32,6 @@ import { JobMarketplaceView } from "./components/views/JobMarketplaceView";
 import { LoadingOverlay } from "./components/LoadingOverlay";
 import { InstallPrompt } from "./components/InstallPrompt";
 import { PremiumSubscriptionModal } from "./components/PremiumSubscriptionModal";
-import { SystemDiagnosticsModal } from "./components/SystemDiagnosticsModal";
 import { UserRole, ActiveTab } from "./types";
 
 export default function App() {
@@ -87,7 +86,6 @@ export default function App() {
   });
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
-  const [isDiagnosticsOpen, setIsDiagnosticsOpen] = useState(false);
   const [schoolSubscription, setSchoolSubscription] = useState<any>(null);
 
   const checkSubscriptionStatus = async (schoolIdOverride?: string) => {
@@ -391,50 +389,6 @@ export default function App() {
         .catch(() => {});
     }
   }, [isAuthenticated]);
-
-  // Test Resend Email connection to current authenticated user
-  const [testEmailStatus, setTestEmailStatus] = useState<{ loading: boolean; message: string; success?: boolean } | null>(null);
-
-  const testResendEmailConnection = async (targetEmailOverride?: string) => {
-    const targetEmail = targetEmailOverride || userSession?.email || "dtemitope60@gmail.com";
-    setTestEmailStatus({ loading: true, message: `Sending test email to ${targetEmail} via Resend...` });
-    try {
-      const response = await fetch("/api/email/test", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: targetEmail }),
-      });
-      const data = await response.json();
-      if (data.success) {
-        setTestEmailStatus({
-          loading: false,
-          success: true,
-          message: `✅ Resend Connection Verified: Test email sent to ${targetEmail}!`,
-        });
-      } else {
-        setTestEmailStatus({
-          loading: false,
-          success: false,
-          message: `❌ Resend test failed: ${data.resend?.error || data.message || "Failed to send email"}`,
-        });
-      }
-    } catch (err: any) {
-      setTestEmailStatus({
-        loading: false,
-        success: false,
-        message: `❌ Network error sending test email: ${err?.message || err}`,
-      });
-    }
-    setTimeout(() => {
-      setTestEmailStatus(null);
-    }, 7000);
-  };
-
-  // Expose test function on window object for easy manual developer execution
-  useEffect(() => {
-    (window as any).testResendConnection = testResendEmailConnection;
-    (window as any).sendTestEmail = testResendEmailConnection;
-  }, [userSession]);
 
   const handleSelectTab = (tab: ActiveTab | string, overrideRole?: UserRole) => {
     const effectiveRole = overrideRole || currentRole;
@@ -762,7 +716,6 @@ export default function App() {
           onLogout={handleLogout}
           isMobileOpen={mobileSidebarOpen}
           onCloseMobile={() => setMobileSidebarOpen(false)}
-          onOpenDiagnostics={() => setIsDiagnosticsOpen(true)}
         />
 
         {/* Main Content Workspace */}
@@ -771,15 +724,6 @@ export default function App() {
           {accessDeniedMessage && (
             <div className="bg-rose-600 text-white text-xs font-bold px-4 py-2 text-center shadow-lg animate-fade-in flex items-center justify-center gap-2">
               <span>⚠️ {accessDeniedMessage}</span>
-            </div>
-          )}
-
-          {/* Resend Connection Test Status Toast */}
-          {testEmailStatus && (
-            <div className={`text-white text-xs font-bold px-4 py-2.5 text-center shadow-lg animate-fade-in flex items-center justify-center gap-2 ${
-              testEmailStatus.loading ? "bg-indigo-600 animate-pulse" : testEmailStatus.success ? "bg-emerald-600" : "bg-rose-600"
-            }`}>
-              <span>{testEmailStatus.message}</span>
             </div>
           )}
 
@@ -806,7 +750,6 @@ export default function App() {
             isAuthenticated={isAuthenticated}
             onLogout={handleLogout}
             onToggleMobileMenu={() => setMobileSidebarOpen((prev) => !prev)}
-            onOpenDiagnostics={() => setIsDiagnosticsOpen(true)}
           />
 
           {/* 7-Day Free Trial / Expired Warning Banner */}
@@ -873,25 +816,6 @@ export default function App() {
           userSession={userSession}
           onPaymentSuccess={(updatedSub) => {
             setSchoolSubscription(updatedSub);
-          }}
-        />
-
-        {/* System Diagnostics & Functional Verification Modal */}
-        <SystemDiagnosticsModal
-          isOpen={isDiagnosticsOpen}
-          onClose={() => setIsDiagnosticsOpen(false)}
-          currentRole={currentRole}
-          onSwitchRole={(role) => {
-            setCurrentRole(role);
-            if (role === "Super Admin") {
-              handleSelectTab("superadmin");
-            } else if (role === "Student" || role === "Parent") {
-              handleSelectTab("student-parent-portal");
-            } else if (role === "Teacher" || role === "Class Teacher" || role === "Subject Teacher") {
-              handleSelectTab("teacher-portal");
-            } else {
-              handleSelectTab("dashboard");
-            }
           }}
         />
       </div>

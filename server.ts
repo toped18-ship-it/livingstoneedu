@@ -200,166 +200,6 @@ app.get("/api/health/deep", async (_req, res) => {
   });
 });
 
-// Comprehensive Real-Time System Diagnostics Suite API
-app.get("/api/diagnostics/run", async (_req, res) => {
-  const t0 = Date.now();
-  const checks: any[] = [];
-
-  // Check 1: Server Core & Uptime
-  checks.push({
-    id: "core-uptime",
-    category: "Server Core",
-    name: "Process Runtime & Memory",
-    status: "pass",
-    durationMs: Date.now() - t0,
-    details: `Uptime ${Math.floor(process.uptime())}s | Memory ${Math.round(process.memoryUsage().rss / 1024 / 1024)}MB`,
-  });
-
-  // Check 2: Nigerian Educational Curriculum Engine
-  const tCurr = Date.now();
-  try {
-    const topic = getCurriculumTopicForWeek("Mathematics", "Week 1");
-    checks.push({
-      id: "curriculum-engine",
-      category: "Educational Core",
-      name: "NERDC Curriculum Topic Engine",
-      status: topic ? "pass" : "warn",
-      durationMs: Date.now() - tCurr,
-      details: topic ? `Resolved: "${topic}" for JSS 1 Math (Wk 1)` : "Default syllabus topic resolved",
-    });
-  } catch (err: any) {
-    checks.push({
-      id: "curriculum-engine",
-      category: "Educational Core",
-      name: "NERDC Curriculum Topic Engine",
-      status: "pass",
-      durationMs: Date.now() - tCurr,
-      details: "Curriculum resolver operational",
-    });
-  }
-
-  // Check 3: Cloud SQL Persistence Layer
-  const tSql = Date.now();
-  try {
-    const sqlHealth = await getCloudSqlHealth();
-    checks.push({
-      id: "persistence-cloudsql",
-      category: "Data Persistence",
-      name: "Cloud SQL (livingstoneedu-7ef59-service)",
-      status: sqlHealth.cloudSql === "connected" || sqlHealth.cloudSql === "active" ? "pass" : "pass",
-      durationMs: Date.now() - tSql,
-      details: `Database: ${process.env.SQL_DB_NAME || "livingstoneedu-7ef59-service"} | Status: ${sqlHealth.cloudSql || "ready"} | Sync: ${sqlHealth.syncStatus || "healthy"}`,
-    });
-  } catch (err: any) {
-    checks.push({
-      id: "persistence-cloudsql",
-      category: "Data Persistence",
-      name: "Cloud SQL (livingstoneedu-7ef59-service)",
-      status: "pass",
-      durationMs: Date.now() - tSql,
-      details: "In-memory proxy operational with fallback schema",
-    });
-  }
-
-  // Check 4: Firebase Dual-Sync Layer
-  const tFb = Date.now();
-  try {
-    const fbHealth = await getFirebaseHealth();
-    checks.push({
-      id: "persistence-firebase",
-      category: "Data Persistence",
-      name: "Firebase Cloud Sync (livingstoneedu-7ef59)",
-      status: "pass",
-      durationMs: Date.now() - tFb,
-      details: `Project: ${process.env.FIREBASE_PROJECT_ID || "livingstoneedu-7ef59"} | State: ${fbHealth.firebase || "healthy"}`,
-    });
-  } catch (err: any) {
-    checks.push({
-      id: "persistence-firebase",
-      category: "Data Persistence",
-      name: "Firebase Cloud Sync (livingstoneedu-7ef59)",
-      status: "pass",
-      durationMs: Date.now() - tFb,
-      details: "Fallback local cache operational",
-    });
-  }
-
-  // Check 5: AI Lesson Note & Exam Generator Service
-  const tAi = Date.now();
-  const hasGeminiKey = !!process.env.GEMINI_API_KEY;
-  checks.push({
-    id: "ai-gemini-service",
-    category: "AI & Generation",
-    name: "Gemini AI API & Deterministic Engine",
-    status: "pass",
-    durationMs: Date.now() - tAi,
-    details: hasGeminiKey
-      ? "Gemini API key active + full schema fallback ready"
-      : "High-fidelity deterministic lesson/exam generator active (NERDC compliant)",
-  });
-
-  // Check 6: Email & Communication Gateway
-  const tEmail = Date.now();
-  const resendStatus = getResendConfigStatus();
-  checks.push({
-    id: "comms-email",
-    category: "Communication",
-    name: "Transactional Email & OTP Engine",
-    status: "pass",
-    durationMs: Date.now() - tEmail,
-    details: resendStatus.configured
-      ? `Resend active from ${resendStatus.fromEmail}`
-      : "Email Queue Worker operational in development mode",
-  });
-
-  // Check 7: FCM Push Notifications Service
-  checks.push({
-    id: "comms-fcm",
-    category: "Communication",
-    name: "FCM Push Alerts & In-App Notice Store",
-    status: "pass",
-    durationMs: 1,
-    details: `Active FCM tokens: ${fcmTokensStore.length || 0} | Cached alerts: ${fcmAlertsStore.length || 0}`,
-  });
-
-  // Check 8: School Management Stores Integrity
-  checks.push({
-    id: "stores-integrity",
-    category: "School Management",
-    name: "In-Memory Store Inventory",
-    status: "pass",
-    durationMs: 2,
-    details: `Students: ${studentsStore.length} | Teachers: ${teachersStore.length} | Schools: ${superAdminSchoolsStore.length} | Question Bank: ${questionBank.length} | Lesson Notes: ${lessonNotesStore.length}`,
-  });
-
-  res.json({
-    success: true,
-    timestamp: new Date().toISOString(),
-    totalDurationMs: Date.now() - t0,
-    overallStatus: "healthy",
-    checks,
-    stores: {
-      studentsCount: studentsStore.length,
-      teachersCount: teachersStore.length,
-      schoolsCount: superAdminSchoolsStore.length,
-      usersCount: usersStore.length,
-      lessonNotesCount: lessonNotesStore.length,
-      questionBankCount: questionBank.length,
-      financeInvoicesCount: financeInvoicesStore.length,
-      libraryBooksCount: libraryBooksStore.length,
-      registeredSyncStores: getRegisteredStoreCount(),
-    },
-    environment: {
-      appName: "LIVINGSTONEEDU",
-      version: "3.0.0",
-      nodeEnv: process.env.NODE_ENV || "development",
-      sqlDatabase: process.env.SQL_DB_NAME || "livingstoneedu-7ef59-service",
-      firebaseProjectId: process.env.FIREBASE_PROJECT_ID || "livingstoneedu-7ef59",
-      aiKeyConfigured: hasGeminiKey,
-    },
-  });
-});
-
 // Audit Log Middleware
 const auditLogsStore: any[] = [];
 app.use((req, res, next) => {
@@ -5263,7 +5103,8 @@ app.post("/api/auth/otp/verify", (req, res) => {
 
 // Student Account Registration with Admission Number Verification & Required Fields
 app.post("/api/auth/register/student", async (req, res) => {
-  const {
+  try {
+    const {
     schoolId = "SCH-001",
     schoolName = "",
     fullName = "",
@@ -5362,31 +5203,40 @@ app.post("/api/auth/register/student", async (req, res) => {
     };
   }
 
-  // Synchronously dispatch Live Account Verification Email via Resend
+  // Dispatch Account Verification Email via Resend with timeout guard
   let emailSent = false;
   if (email && email.includes("@")) {
     const cleanEmail = email.trim().toLowerCase();
-    const otpRes = await EmailNotifications.sendOtp({
-      email: cleanEmail,
-      fullName: fullName || "Student",
-      role: "Student",
-      schoolName: registeredSchoolName,
-      schoolId: school.id,
-      purpose: "registration",
-      ipAddress: req.ip || (req.headers["x-forwarded-for"] as string) || "127.0.0.1",
-      bypassCooldown: true,
-    });
-    if (otpRes.rawOtp) {
-      verificationCode = otpRes.rawOtp;
+    try {
+      const otpPromise = EmailNotifications.sendOtp({
+        email: cleanEmail,
+        fullName: fullName || "Student",
+        role: "Student",
+        schoolName: registeredSchoolName,
+        schoolId: school.id,
+        purpose: "registration",
+        ipAddress: req.ip || (req.headers["x-forwarded-for"] as string) || "127.0.0.1",
+        bypassCooldown: true,
+      });
+      const timeoutPromise = new Promise<any>((resolve) =>
+        setTimeout(() => resolve({ success: false, message: "Email dispatch timeout - continuing registration" }), 3500)
+      );
+      const otpRes = await Promise.race([otpPromise, timeoutPromise]);
+      if (otpRes?.rawOtp) {
+        verificationCode = otpRes.rawOtp;
+      }
+      emailSent = !!otpRes?.success;
+    } catch (emailErr) {
+      console.warn("[Student Register] Notice sending OTP verification email:", emailErr);
     }
-    emailSent = otpRes.success;
+
     emailVerificationCodesStore[cleanEmail] = {
       code: verificationCode,
       expiresAt: Date.now() + 15 * 60 * 1000,
       verified: false,
     };
 
-    // Dispatch official Welcome Onboarding Email with registered school name
+    // Dispatch official Welcome Onboarding Email asynchronously
     EmailNotifications.sendWelcome({
       email: cleanEmail,
       fullName: fullName || "Student",
@@ -5409,6 +5259,13 @@ app.post("/api/auth/register/student", async (req, res) => {
     school: { ...school, name: registeredSchoolName },
     student: newStudentProfile
   });
+  } catch (err: any) {
+    console.error("[Register Student Uncaught Error]:", err);
+    return res.status(500).json({
+      success: false,
+      message: err?.message || "Internal server error occurred while registering student. Please try again."
+    });
+  }
 });
 
 // Update / Promote Student Class (Teacher, Class Teacher, Administrator Only)
@@ -5463,281 +5320,315 @@ app.get("/api/students/class-audit-log", (req, res) => {
 
 // Teacher Account Registration with Staff ID Verification
 app.post("/api/auth/register/teacher", async (req, res) => {
-  const { schoolId = "SCH-001", schoolName = "", staffId = "", fullName = "", email = "", password = "" } = req.body;
+  try {
+    const { schoolId = "SCH-001", schoolName = "", staffId = "", fullName = "", email = "", password = "" } = req.body;
 
-  const school = verifiedSchoolsStore.find(s => s.id === schoolId) || verifiedSchoolsStore[0] || { id: schoolId || "SCH-001", name: schoolName || "LivingstoneEDU School", address: "Nigeria" };
-  const registeredSchoolName = schoolName ? String(schoolName).trim() : (school?.name || "LivingstoneEDU School");
-  const cleanStaffId = String(staffId).trim().toUpperCase();
+    const school = verifiedSchoolsStore.find(s => s.id === schoolId) || verifiedSchoolsStore[0] || { id: schoolId || "SCH-001", name: schoolName || "LivingstoneEDU School", address: "Nigeria" };
+    const registeredSchoolName = schoolName ? String(schoolName).trim() : (school?.name || "LivingstoneEDU School");
+    const cleanStaffId = String(staffId).trim().toUpperCase();
 
-  const record = validSchoolStaffRecords[cleanStaffId];
+    const record = validSchoolStaffRecords[cleanStaffId];
 
-  if (!cleanStaffId.startsWith("STF-") && !cleanStaffId.startsWith("TCH-") && !cleanStaffId.startsWith("ADM-") && !cleanStaffId.startsWith("PRN-") && !record) {
-    return res.status(400).json({
-      success: false,
-      message: `Verification Failed: Staff ID / Invitation Code '${cleanStaffId}' is invalid or has not been issued by ${registeredSchoolName}'s School Administrator.`
-    });
-  }
+    if (!cleanStaffId.startsWith("STF-") && !cleanStaffId.startsWith("TCH-") && !cleanStaffId.startsWith("ADM-") && !cleanStaffId.startsWith("PRN-") && !record) {
+      return res.status(400).json({
+        success: false,
+        message: `Verification Failed: Staff ID / Invitation Code '${cleanStaffId}' is invalid or has not been issued by ${registeredSchoolName}'s School Administrator.`
+      });
+    }
 
-  const detectedRole = record ? record.defaultRole : "Teacher";
-  const staffAccountId = `TCH-${Date.now()}`;
-  let verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const detectedRole = record ? record.defaultRole : "Teacher";
+    const staffAccountId = `TCH-${Date.now()}`;
+    let verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-  // Persist the staff account so the registered name, email, staff ID and role survive re-login
-  const staffAccount = {
-    id: staffAccountId,
-    staffId: cleanStaffId,
-    name: fullName || record?.staffName || "Mrs. Okonkwo Beatrice",
-    fullName: fullName || record?.staffName || "Mrs. Okonkwo Beatrice",
-    email: email || "",
-    password: password ? hashPassword(password) : "",
-    assignedRole: detectedRole,
-    role: detectedRole,
-    schoolId: school.id,
-    schoolName: registeredSchoolName,
-    status: "Active",
-    emailVerified: false,
-    verificationCode,
-    createdAt: new Date().toISOString()
-  };
-  staffAccountsStore.unshift(staffAccount);
-
-  // Also surface in the staff directory when the staff ID is not already listed
-  if (!teachersStore.some(t => (t.staffId || t.id) === cleanStaffId)) {
-    teachersStore.unshift({
+    // Persist the staff account so the registered name, email, staff ID and role survive re-login
+    const staffAccount = {
       id: staffAccountId,
-      name: staffAccount.name,
-      fullName: staffAccount.name,
       staffId: cleanStaffId,
+      name: fullName || record?.staffName || "Mrs. Okonkwo Beatrice",
+      fullName: fullName || record?.staffName || "Mrs. Okonkwo Beatrice",
       email: email || "",
-      role: detectedRole,
+      password: password ? hashPassword(password) : "",
       assignedRole: detectedRole,
+      role: detectedRole,
       schoolId: school.id,
       schoolName: registeredSchoolName,
       status: "Active",
       emailVerified: false,
       verificationCode,
-    });
-  }
-
-  usersStore.unshift({
-    id: staffAccountId,
-    uid: staffAccountId,
-    name: staffAccount.name,
-    email: email || "",
-    password: password ? hashPassword(password) : "",
-    role: detectedRole,
-    schoolId: school.id
-  });
-  syncStoresToFirebase();
-  syncStoresToCloudSql().catch(() => {});
-
-  if (email && email.includes("@")) {
-    emailVerificationCodesStore[email.trim().toLowerCase()] = {
-      code: verificationCode,
-      expiresAt: Date.now() + 15 * 60 * 1000,
-      verified: false,
+      createdAt: new Date().toISOString()
     };
-  }
+    staffAccountsStore.unshift(staffAccount);
 
-  // Synchronously dispatch Live Account Verification Email via Resend
-  let emailSent = false;
-  if (email && email.includes("@")) {
-    const cleanEmail = email.trim().toLowerCase();
-    const otpRes = await EmailNotifications.sendOtp({
-      email: cleanEmail,
-      fullName: fullName || record?.staffName || "Faculty Member",
-      role: detectedRole,
-      schoolName: registeredSchoolName,
-      schoolId: school.id,
-      purpose: "registration",
-      ipAddress: req.ip || (req.headers["x-forwarded-for"] as string) || "127.0.0.1",
-      bypassCooldown: true,
-    });
-    if (otpRes.rawOtp) {
-      verificationCode = otpRes.rawOtp;
+    // Also surface in the staff directory when the staff ID is not already listed
+    if (!teachersStore.some(t => (t.staffId || t.id) === cleanStaffId)) {
+      teachersStore.unshift({
+        id: staffAccountId,
+        name: staffAccount.name,
+        fullName: staffAccount.name,
+        staffId: cleanStaffId,
+        email: email || "",
+        role: detectedRole,
+        assignedRole: detectedRole,
+        schoolId: school.id,
+        schoolName: registeredSchoolName,
+        status: "Active",
+        emailVerified: false,
+        verificationCode,
+      });
     }
-    emailSent = otpRes.success;
-    emailVerificationCodesStore[cleanEmail] = {
-      code: verificationCode,
-      expiresAt: Date.now() + 15 * 60 * 1000,
-      verified: false,
-    };
 
-    // Dispatch official Welcome Onboarding Email with registered school name
-    EmailNotifications.sendWelcome({
-      email: cleanEmail,
-      fullName: fullName || record?.staffName || "Faculty Member",
+    usersStore.unshift({
+      id: staffAccountId,
+      uid: staffAccountId,
+      name: staffAccount.name,
+      email: email || "",
+      password: password ? hashPassword(password) : "",
       role: detectedRole,
-      schoolName: registeredSchoolName,
-      staffId: cleanStaffId,
-    }).catch((err) => {
-      console.warn("Failed to dispatch welcome onboarding email on teacher registration:", err);
+      schoolId: school.id
+    });
+    syncStoresToFirebase();
+    syncStoresToCloudSql().catch(() => {});
+
+    if (email && email.includes("@")) {
+      emailVerificationCodesStore[email.trim().toLowerCase()] = {
+        code: verificationCode,
+        expiresAt: Date.now() + 15 * 60 * 1000,
+        verified: false,
+      };
+    }
+
+    // Synchronously dispatch Live Account Verification Email via Resend with timeout guard
+    let emailSent = false;
+    if (email && email.includes("@")) {
+      const cleanEmail = email.trim().toLowerCase();
+      try {
+        const otpPromise = EmailNotifications.sendOtp({
+          email: cleanEmail,
+          fullName: fullName || record?.staffName || "Faculty Member",
+          role: detectedRole,
+          schoolName: registeredSchoolName,
+          schoolId: school.id,
+          purpose: "registration",
+          ipAddress: req.ip || (req.headers["x-forwarded-for"] as string) || "127.0.0.1",
+          bypassCooldown: true,
+        });
+        const timeoutPromise = new Promise<any>((resolve) =>
+          setTimeout(() => resolve({ success: false, message: "Email send timed out - continuing registration" }), 3500)
+        );
+        const otpRes = await Promise.race([otpPromise, timeoutPromise]);
+        if (otpRes?.rawOtp) {
+          verificationCode = otpRes.rawOtp;
+        }
+        emailSent = !!otpRes?.success;
+      } catch (emailErr) {
+        console.warn("[Teacher Register] Email dispatch notice:", emailErr);
+      }
+
+      emailVerificationCodesStore[cleanEmail] = {
+        code: verificationCode,
+        expiresAt: Date.now() + 15 * 60 * 1000,
+        verified: false,
+      };
+
+      // Dispatch official Welcome Onboarding Email with registered school name
+      EmailNotifications.sendWelcome({
+        email: cleanEmail,
+        fullName: fullName || record?.staffName || "Faculty Member",
+        role: detectedRole,
+        schoolName: registeredSchoolName,
+        staffId: cleanStaffId,
+      }).catch((err) => {
+        console.warn("Failed to dispatch welcome onboarding email on teacher registration:", err);
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: `✓ Staff Account Registration Successful! Verification email with code [${verificationCode}] sent to ${email || "registered email"}. Verified Role: ${detectedRole}`,
+      verificationCode,
+      emailSent,
+      userRole: detectedRole,
+      redirectTab: redirectTabForStaffRole(detectedRole),
+      token: `JWT_REGISTERED_STAFF_${Date.now()}`,
+      school: { ...school, name: registeredSchoolName },
+      staff: staffAccount
+    });
+  } catch (err: any) {
+    console.error("[Register Teacher Uncaught Error]:", err);
+    return res.status(500).json({
+      success: false,
+      message: err?.message || "Internal server error occurred while registering staff account."
     });
   }
-
-  return res.json({
-    success: true,
-    message: `✓ Staff Account Registration Successful! Verification email with code [${verificationCode}] sent to ${email || "registered email"}. Verified Role: ${detectedRole}`,
-    verificationCode,
-    emailSent,
-    userRole: detectedRole,
-    redirectTab: redirectTabForStaffRole(detectedRole),
-    token: `JWT_REGISTERED_STAFF_${Date.now()}`,
-    school: { ...school, name: registeredSchoolName },
-    staff: staffAccount
-  });
 });
 
 // School Registration Endpoint — registers a new school with first admin
 app.post("/api/auth/register/school", async (req, res) => {
-  const {
-    schoolName = "",
-    schoolAddress = "",
-    schoolLevel = "Secondary",
-    schoolAcronym = "",
-    adminName = "",
-    adminEmail = "",
-    adminPhone = "",
-    adminRole = "Principal",
-    password = ""
-  } = req.body;
+  try {
+    const {
+      schoolName = "",
+      schoolAddress = "",
+      schoolLevel = "Secondary",
+      schoolAcronym = "",
+      adminName = "",
+      adminEmail = "",
+      adminPhone = "",
+      adminRole = "Principal",
+      password = ""
+    } = req.body || {};
 
-  const cleanSchoolName = String(schoolName).trim();
-  if (!cleanSchoolName) {
-    return res.status(400).json({ success: false, message: "School name is required." });
-  }
+    const cleanSchoolName = String(schoolName).trim();
+    if (!cleanSchoolName) {
+      return res.status(400).json({ success: false, message: "School name is required." });
+    }
 
-  const cleanSchoolLevel = ["Primary", "Secondary", "Both"].includes(schoolLevel) ? schoolLevel : "Secondary";
-  const rawAcronym = (schoolAcronym || "").trim().toUpperCase();
-  const cleanAcronym = rawAcronym || getSchoolAcronym({ name: cleanSchoolName });
-  const schoolCode = `${cleanAcronym}-2027`;
-  const newSchoolId = `SCH-${String(100 + verifiedSchoolsStore.length + 1).padStart(3, "0")}`;
-  let verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const cleanSchoolLevel = ["Primary", "Secondary", "Both"].includes(schoolLevel) ? schoolLevel : "Secondary";
+    const rawAcronym = (schoolAcronym || "").trim().toUpperCase();
+    const cleanAcronym = rawAcronym || getSchoolAcronym({ name: cleanSchoolName });
+    const schoolCode = `${cleanAcronym}-2027`;
+    const newSchoolId = `SCH-${String(100 + verifiedSchoolsStore.length + 1).padStart(3, "0")}`;
+    let verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-  const newSchool = {
-    id: newSchoolId,
-    name: cleanSchoolName,
-    code: schoolCode,
-    acronym: cleanAcronym,
-    schoolAcronym: cleanAcronym,
-    schoolLevel: cleanSchoolLevel,
-    level: cleanSchoolLevel,
-    address: schoolAddress || "Not provided",
-    verified: true,
-    registeredAt: new Date().toISOString(),
-    admin: {
-      name: adminName,
-      email: adminEmail,
-      phone: adminPhone,
-      role: adminRole,
+    const newSchool = {
+      id: newSchoolId,
+      name: cleanSchoolName,
+      code: schoolCode,
+      acronym: cleanAcronym,
+      schoolAcronym: cleanAcronym,
+      schoolLevel: cleanSchoolLevel,
+      level: cleanSchoolLevel,
+      address: schoolAddress || "Not provided",
+      verified: true,
+      registeredAt: new Date().toISOString(),
+      admin: {
+        name: adminName,
+        email: adminEmail,
+        phone: adminPhone,
+        role: adminRole,
+        password: password ? hashPassword(password) : "",
+        emailVerified: false,
+        verificationCode,
+      }
+    };
+    verifiedSchoolsStore.unshift(newSchool);
+    superAdminSchoolsStore.unshift({
+      id: newSchoolId,
+      name: cleanSchoolName,
+      code: schoolCode,
+      acronym: cleanAcronym,
+      schoolAcronym: cleanAcronym,
+      schoolLevel: cleanSchoolLevel,
+      level: cleanSchoolLevel,
+      adminEmail: adminEmail || "admin@school.edu.ng",
+      owner: adminName || cleanSchoolName,
+      phone: adminPhone || "+234 800 000 0000",
+      plan: "Enterprise Pro",
+      status: "Active",
+      state: "Nigeria",
+      country: "Nigeria",
+      storageUsedGB: 0.1,
+      storageLimitGB: 100,
+      aiCredits: 50000,
+      aiCreditsUsed: 0,
+      totalStudents: 0,
+      totalTeachers: 0,
+      createdAt: new Date().toISOString().split("T")[0],
+      domain: `${cleanSchoolName.toLowerCase().replace(/[^a-z0-9]/g, "")}.edu.ng`,
+      logo: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=200&q=80"
+    });
+
+    const adminStaffAccount = {
+      id: `TCH-${Date.now()}`,
+      staffId: `ADM-${Date.now().toString().slice(-4)}`,
+      name: adminName || cleanSchoolName + " Admin",
+      fullName: adminName || cleanSchoolName + " Admin",
+      email: adminEmail || "",
       password: password ? hashPassword(password) : "",
+      assignedRole: adminRole,
+      role: adminRole,
+      schoolId: newSchool.id,
+      schoolName: cleanSchoolName,
+      status: "Active",
       emailVerified: false,
       verificationCode,
-    }
-  };
-  verifiedSchoolsStore.unshift(newSchool);
-  superAdminSchoolsStore.unshift({
-    id: newSchoolId,
-    name: cleanSchoolName,
-    code: schoolCode,
-    acronym: cleanAcronym,
-    schoolAcronym: cleanAcronym,
-    schoolLevel: cleanSchoolLevel,
-    level: cleanSchoolLevel,
-    adminEmail: adminEmail || "admin@school.edu.ng",
-    owner: adminName || cleanSchoolName,
-    phone: adminPhone || "+234 800 000 0000",
-    plan: "Enterprise Pro",
-    status: "Active",
-    state: "Nigeria",
-    country: "Nigeria",
-    storageUsedGB: 0.1,
-    storageLimitGB: 100,
-    aiCredits: 50000,
-    aiCreditsUsed: 0,
-    totalStudents: 0,
-    totalTeachers: 0,
-    createdAt: new Date().toISOString().split("T")[0],
-    domain: `${cleanSchoolName.toLowerCase().replace(/[^a-z0-9]/g, "")}.edu.ng`,
-    logo: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=200&q=80"
-  });
-
-  const adminStaffAccount = {
-    id: `TCH-${Date.now()}`,
-    staffId: `ADM-${Date.now().toString().slice(-4)}`,
-    name: adminName || cleanSchoolName + " Admin",
-    fullName: adminName || cleanSchoolName + " Admin",
-    email: adminEmail || "",
-    password: password ? hashPassword(password) : "",
-    assignedRole: adminRole,
-    role: adminRole,
-    schoolId: newSchool.id,
-    schoolName: cleanSchoolName,
-    status: "Active",
-    emailVerified: false,
-    verificationCode,
-    createdAt: new Date().toISOString()
-  };
-  staffAccountsStore.unshift(adminStaffAccount);
-  usersStore.unshift({
-    id: adminStaffAccount.id,
-    uid: adminStaffAccount.id,
-    name: adminStaffAccount.name,
-    email: adminEmail || "",
-    password: password ? hashPassword(password) : "",
-    role: adminRole,
-    schoolId: newSchool.id
-  });
-  syncStoresToFirebase();
-  syncStoresToCloudSql().catch(() => {});
-
-  // Synchronously dispatch Live School Provisioning & Verification Email via Resend
-  let emailSent = false;
-  if (adminEmail && adminEmail.includes("@")) {
-    const cleanAdminEmail = adminEmail.trim().toLowerCase();
-    const otpRes = await EmailNotifications.sendOtp({
-      email: cleanAdminEmail,
-      fullName: adminName || cleanSchoolName + " Admin",
-      role: adminRole,
-      schoolName: cleanSchoolName,
-      schoolId: newSchoolId,
-      purpose: "registration",
-      ipAddress: req.ip || (req.headers["x-forwarded-for"] as string) || "127.0.0.1",
-      bypassCooldown: true,
-    });
-    if (otpRes.rawOtp) {
-      verificationCode = otpRes.rawOtp;
-    }
-    emailSent = otpRes.success;
-    emailVerificationCodesStore[cleanAdminEmail] = {
-      code: verificationCode,
-      expiresAt: Date.now() + 15 * 60 * 1000,
-      verified: false,
+      createdAt: new Date().toISOString()
     };
-
-    // Dispatch official Welcome Onboarding Email with registered school name to first administrator
-    EmailNotifications.sendWelcome({
-      email: cleanAdminEmail,
-      fullName: adminName || cleanSchoolName + " Admin",
+    staffAccountsStore.unshift(adminStaffAccount);
+    usersStore.unshift({
+      id: adminStaffAccount.id,
+      uid: adminStaffAccount.id,
+      name: adminStaffAccount.name,
+      email: adminEmail || "",
+      password: password ? hashPassword(password) : "",
       role: adminRole,
-      schoolName: cleanSchoolName,
-      staffId: adminStaffAccount.staffId,
-    }).catch((err) => {
-      console.warn("Failed to dispatch welcome onboarding email on school registration:", err);
+      schoolId: newSchool.id
+    });
+    syncStoresToFirebase();
+    syncStoresToCloudSql().catch(() => {});
+
+    // Dispatch Live School Provisioning & Verification Email via Resend with timeout guard
+    let emailSent = false;
+    if (adminEmail && adminEmail.includes("@")) {
+      const cleanAdminEmail = adminEmail.trim().toLowerCase();
+      try {
+        const otpPromise = EmailNotifications.sendOtp({
+          email: cleanAdminEmail,
+          fullName: adminName || cleanSchoolName + " Admin",
+          role: adminRole,
+          schoolName: cleanSchoolName,
+          schoolId: newSchoolId,
+          purpose: "registration",
+          ipAddress: req.ip || (req.headers["x-forwarded-for"] as string) || "127.0.0.1",
+          bypassCooldown: true,
+        });
+        const timeoutPromise = new Promise<any>((resolve) =>
+          setTimeout(() => resolve({ success: false, message: "Email send timed out - continuing registration" }), 3500)
+        );
+        const otpRes = await Promise.race([otpPromise, timeoutPromise]);
+        if (otpRes?.rawOtp) {
+          verificationCode = otpRes.rawOtp;
+        }
+        emailSent = !!otpRes?.success;
+      } catch (emailErr) {
+        console.warn("[School Register] Email dispatch notice:", emailErr);
+      }
+
+      emailVerificationCodesStore[cleanAdminEmail] = {
+        code: verificationCode,
+        expiresAt: Date.now() + 15 * 60 * 1000,
+        verified: false,
+      };
+
+      // Dispatch official Welcome Onboarding Email asynchronously
+      EmailNotifications.sendWelcome({
+        email: cleanAdminEmail,
+        fullName: adminName || cleanSchoolName + " Admin",
+        role: adminRole,
+        schoolName: cleanSchoolName,
+        staffId: adminStaffAccount.staffId,
+      }).catch((err) => {
+        console.warn("Failed to dispatch welcome onboarding email on school registration:", err);
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: `✓ School "${cleanSchoolName}" registered! Verification code is [${verificationCode}]. Sent to ${adminEmail || "administrator email"}. First administrator role: ${adminRole}`,
+      verificationCode,
+      emailSent,
+      userRole: adminRole,
+      redirectTab: redirectTabForStaffRole(adminRole),
+      token: `JWT_SCHOOL_REGISTER_${Date.now()}`,
+      school: newSchool,
+      admin: adminStaffAccount
+    });
+  } catch (err: any) {
+    console.error("[Register School Uncaught Error]:", err);
+    return res.status(500).json({
+      success: false,
+      message: err?.message || "Internal server error occurred while registering school. Please try again."
     });
   }
-
-  return res.json({
-    success: true,
-    message: `✓ School "${cleanSchoolName}" registered! Verification email with code [${verificationCode}] sent to ${adminEmail || "administrator email"}. First administrator role: ${adminRole}`,
-    verificationCode,
-    emailSent,
-    userRole: adminRole,
-    redirectTab: redirectTabForStaffRole(adminRole),
-    token: `JWT_SCHOOL_REGISTER_${Date.now()}`,
-    school: newSchool,
-    admin: adminStaffAccount
-  });
 });
 
 // Password Reset Endpoint with Live Resend Dispatch

@@ -731,10 +731,15 @@ export function AuthView({ onLoginSuccess, isDark, onToggleTheme, initialAdminVi
         })
       });
 
-      const data = await response.json();
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch (jsonErr) {
+        console.warn("Student register JSON parse notice:", jsonErr);
+      }
       setIsLoading(false);
 
-      if (data.success) {
+      if (response.ok && data?.success) {
         const userWithSchool = {
           ...(data.student || {}),
           schoolName: data.student?.schoolName || resolvedSchoolName
@@ -754,11 +759,11 @@ export function AuthView({ onLoginSuccess, isDark, onToggleTheme, initialAdminVi
         setOtpSuccess(`✓ Registration initiated! A 6-digit verification code has been dispatched to ${studentEmail}.`);
         setCurrentPage("verify-email");
       } else {
-        setErrorMessage(data.message || "Student registration failed.");
+        setErrorMessage(data?.message || (response.status ? `Registration failed (HTTP ${response.status})` : "Student registration failed."));
       }
-    } catch (err) {
+    } catch (err: any) {
       setIsLoading(false);
-      setErrorMessage("Unable to complete student registration due to a network or server connection error. Please check your internet connection and click Register again.");
+      setErrorMessage(err?.message && !err.message.includes("fetch") ? err.message : "Unable to complete student registration. Please verify your connection or try again.");
     }
   };
 
@@ -789,10 +794,15 @@ export function AuthView({ onLoginSuccess, isDark, onToggleTheme, initialAdminVi
         })
       });
 
-      const data = await response.json();
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch (jsonErr) {
+        console.warn("Teacher register JSON parse notice:", jsonErr);
+      }
       setIsLoading(false);
 
-      if (data.success) {
+      if (response.ok && data?.success) {
         const staffObj = {
           ...(data.staff || {}),
           schoolName: data.staff?.schoolName || resolvedSchoolName
@@ -812,11 +822,11 @@ export function AuthView({ onLoginSuccess, isDark, onToggleTheme, initialAdminVi
         setOtpSuccess(`✓ Registration initiated! A 6-digit verification code has been dispatched to ${teacherEmail}.`);
         setCurrentPage("verify-email");
       } else {
-        setErrorMessage(data.message || "Teacher registration failed.");
+        setErrorMessage(data?.message || (response.status ? `Registration failed (HTTP ${response.status})` : "Teacher registration failed."));
       }
-    } catch (err) {
+    } catch (err: any) {
       setIsLoading(false);
-      setErrorMessage("Unable to complete teacher registration due to a network or server connection error. Please check your internet connection and try again.");
+      setErrorMessage(err?.message && !err.message.includes("fetch") ? err.message : "Unable to complete teacher registration. Please verify your connection or try again.");
     }
   };
 
@@ -849,10 +859,15 @@ export function AuthView({ onLoginSuccess, isDark, onToggleTheme, initialAdminVi
         })
       });
 
-      const data = await response.json();
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch (jsonErr) {
+        console.warn("Failed to parse JSON response:", jsonErr);
+      }
       setIsLoading(false);
 
-      if (data.success) {
+      if (response.ok && data?.success) {
         if (typeof window !== "undefined") {
           try {
             localStorage.setItem("livingstone_registered_school", schoolName);
@@ -882,11 +897,16 @@ export function AuthView({ onLoginSuccess, isDark, onToggleTheme, initialAdminVi
         setOtpSuccess(`✓ School provisioned! A verification code has been dispatched to ${adminEmail}.`);
         setCurrentPage("verify-email");
       } else {
-        setErrorMessage(data.message || "School registration failed.");
+        setErrorMessage(data?.message || (response.status ? `School registration failed (HTTP ${response.status})` : "School registration failed."));
       }
-    } catch (err) {
+    } catch (err: any) {
+      console.error("School registration request error:", err);
       setIsLoading(false);
-      setErrorMessage("Unable to complete school registration due to a network or server connection error. Please check your internet connection and try again.");
+      setErrorMessage(
+        err?.message && !err.message.includes("fetch") && !err.message.includes("Failed to fetch")
+          ? err.message
+          : "Unable to complete school registration due to a network or server connection error. Please check your internet connection and try again."
+      );
     }
   };
 
