@@ -33,8 +33,6 @@ try {
   if (preloader) preloader.remove();
 } catch (e) {}
 
-import { Analytics } from '@vercel/analytics/react';
-
 const rootElement = document.getElementById('root');
 if (rootElement) {
   createRoot(rootElement).render(
@@ -42,7 +40,6 @@ if (rootElement) {
       <ErrorBoundary>
         <LiveDataProvider>
           <App />
-          <Analytics />
         </LiveDataProvider>
       </ErrorBoundary>
     </StrictMode>,

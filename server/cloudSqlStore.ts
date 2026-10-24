@@ -75,7 +75,8 @@ let cloudSqlDisabled = !process.env.ENABLE_CLOUD_SQL || process.env.ENABLE_CLOUD
 
 export async function ensureCloudSqlSchema(): Promise<void> {
   if (schemaEnsured || cloudSqlDisabled) return;
-  if (!process.env.SQL_HOST || !process.env.SQL_USER || !process.env.SQL_DB_NAME || process.env.ENABLE_CLOUD_SQL !== "true") {
+  const dbName = process.env.SQL_DB_NAME || "livingstoneedu-7ef59-service";
+  if (!process.env.SQL_HOST || !process.env.SQL_USER || !dbName || process.env.ENABLE_CLOUD_SQL !== "true") {
     cloudSqlDisabled = true;
     return;
   }
@@ -226,7 +227,8 @@ export async function ensureCloudSqlSchema(): Promise<void> {
  */
 export async function hydrateStoresFromCloudSql(): Promise<void> {
   if (cloudSqlDisabled) return;
-  if (!process.env.SQL_HOST || !process.env.SQL_USER || !process.env.SQL_DB_NAME) {
+  const dbName = process.env.SQL_DB_NAME || "livingstoneedu-7ef59-service";
+  if (!process.env.SQL_HOST || !process.env.SQL_USER || !dbName) {
     cloudSqlDisabled = true;
     return;
   }
