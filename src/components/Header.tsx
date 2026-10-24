@@ -23,6 +23,7 @@ import {
   LogOut,
   Settings,
   Menu,
+  Activity,
 } from "lucide-react";
 import { FCMPushAlertManager } from "./FCMPushAlertManager";
 
@@ -37,6 +38,7 @@ interface HeaderProps {
   isAuthenticated?: boolean;
   onLogout?: () => void;
   onToggleMobileMenu?: () => void;
+  onOpenDiagnostics?: () => void;
 }
 
 const ALL_ROLES: { role: UserRole; label: string; icon: React.ReactNode; color: string }[] = [
@@ -65,6 +67,7 @@ export const Header: React.FC<HeaderProps> = ({
   isAuthenticated = false,
   onLogout,
   onToggleMobileMenu,
+  onOpenDiagnostics,
 }) => {
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
   const activeRoleObj = ALL_ROLES.find((r) => r.role === currentRole) || ALL_ROLES[1];
@@ -97,8 +100,20 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Right Controls: Role Switcher, AI Copilot, Weather, Notifications, Theme */}
+      {/* Right Controls: Diagnostics, Role Switcher, AI Copilot, Weather, Notifications, Theme */}
       <div className="flex items-center gap-2 md:gap-3">
+        {/* System Diagnostics Trigger */}
+        {onOpenDiagnostics && (
+          <button
+            onClick={onOpenDiagnostics}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all cursor-pointer"
+            title="Open System Diagnostics & Live Verification Suite"
+          >
+            <Activity className="w-3.5 h-3.5 animate-pulse text-emerald-400" />
+            <span className="hidden lg:inline">Diagnostics</span>
+          </button>
+        )}
+
         <FCMPushAlertManager compact />
         {/* Weather Pill */}
         <div className="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-medium text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700">

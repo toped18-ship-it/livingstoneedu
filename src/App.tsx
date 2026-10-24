@@ -32,6 +32,7 @@ import { JobMarketplaceView } from "./components/views/JobMarketplaceView";
 import { LoadingOverlay } from "./components/LoadingOverlay";
 import { InstallPrompt } from "./components/InstallPrompt";
 import { PremiumSubscriptionModal } from "./components/PremiumSubscriptionModal";
+import { SystemDiagnosticsModal } from "./components/SystemDiagnosticsModal";
 import { UserRole, ActiveTab } from "./types";
 
 export default function App() {
@@ -86,6 +87,7 @@ export default function App() {
   });
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
+  const [isDiagnosticsOpen, setIsDiagnosticsOpen] = useState(false);
   const [schoolSubscription, setSchoolSubscription] = useState<any>(null);
 
   const checkSubscriptionStatus = async (schoolIdOverride?: string) => {
@@ -760,6 +762,7 @@ export default function App() {
           onLogout={handleLogout}
           isMobileOpen={mobileSidebarOpen}
           onCloseMobile={() => setMobileSidebarOpen(false)}
+          onOpenDiagnostics={() => setIsDiagnosticsOpen(true)}
         />
 
         {/* Main Content Workspace */}
@@ -803,6 +806,7 @@ export default function App() {
             isAuthenticated={isAuthenticated}
             onLogout={handleLogout}
             onToggleMobileMenu={() => setMobileSidebarOpen((prev) => !prev)}
+            onOpenDiagnostics={() => setIsDiagnosticsOpen(true)}
           />
 
           {/* 7-Day Free Trial / Expired Warning Banner */}
@@ -869,6 +873,25 @@ export default function App() {
           userSession={userSession}
           onPaymentSuccess={(updatedSub) => {
             setSchoolSubscription(updatedSub);
+          }}
+        />
+
+        {/* System Diagnostics & Functional Verification Modal */}
+        <SystemDiagnosticsModal
+          isOpen={isDiagnosticsOpen}
+          onClose={() => setIsDiagnosticsOpen(false)}
+          currentRole={currentRole}
+          onSwitchRole={(role) => {
+            setCurrentRole(role);
+            if (role === "Super Admin") {
+              handleSelectTab("superadmin");
+            } else if (role === "Student" || role === "Parent") {
+              handleSelectTab("student-parent-portal");
+            } else if (role === "Teacher" || role === "Class Teacher" || role === "Subject Teacher") {
+              handleSelectTab("teacher-portal");
+            } else {
+              handleSelectTab("dashboard");
+            }
           }}
         />
       </div>
