@@ -96,7 +96,7 @@ app.use(async (req, _res, next) => {
 app.all("/api/firebase/app-check-token", async (req, res) => {
   try {
     const adminAppCheck = getAdminAppCheck();
-    const appId = String(req.query.appId || req.body?.appId || process.env.FIREBASE_APP_ID || "1:862725103424:web:dd47f90a610e60d93424a5");
+    const appId = String(req.query.appId || req.body?.appId || process.env.FIREBASE_APP_ID || "1:538695521516:web:2c3df309e51d0a94bd41c9");
     if (!adminAppCheck) {
       const fallbackToken = `dev-appcheck-${Date.now()}-${crypto.randomBytes(8).toString("hex")}`;
       return res.json({

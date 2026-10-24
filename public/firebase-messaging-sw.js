@@ -4,12 +4,12 @@ importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js'
 importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js');
 
 firebase.initializeApp({
-  apiKey: "AIzaSyDFWBa-XQ5Ppz8aAcChO8U5uWQ5gMRrBRM",
-  authDomain: "livingstoneedu-1ef57.firebaseapp.com",
-  projectId: "livingstoneedu-1ef57",
-  storageBucket: "livingstoneedu-1ef57.firebasestorage.app",
-  messagingSenderId: "862725103424",
-  appId: "1:862725103424:web:dd47f90a610e60d93424a5"
+  apiKey: "AIzaSyAuFAyM8AdGHt06t-cEE_TEXf9cI1ft5QM",
+  authDomain: "livingstoneedu-7ef59.firebaseapp.com",
+  projectId: "livingstoneedu-7ef59",
+  storageBucket: "livingstoneedu-7ef59.firebasestorage.app",
+  messagingSenderId: "538695521516",
+  appId: "1:538695521516:web:2c3df309e51d0a94bd41c9"
 });
 
 const messaging = firebase.messaging();

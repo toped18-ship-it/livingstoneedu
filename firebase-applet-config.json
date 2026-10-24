@@ -1,12 +1,11 @@
 {
-  "projectId": "temporal-student-6k76w",
-  "appId": "1:1015180810141:web:9d8a801cdac9a9bcfc8174",
-  "apiKey": "AIzaSyA_KLM9qv3fzzxJKAlc7jQP7Kk2K0fYaMU",
-  "authDomain": "temporal-student-6k76w.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-livingstoneedu-2b359735-d5a4-43a4-8086-e7c6a787a279",
-  "storageBucket": "temporal-student-6k76w.firebasestorage.app",
-  "messagingSenderId": "1015180810141",
-  "measurementId": "",
-  "oAuthClientId": "1015180810141-465in50m6lvltdsn9oqcj8fj30p85sup.apps.googleusercontent.com",
-  "recaptchaSiteKey": ""
+  "projectId": "livingstoneedu-7ef59",
+  "appId": "1:538695521516:web:2c3df309e51d0a94bd41c9",
+  "apiKey": "AIzaSyAuFAyM8AdGHt06t-cEE_TEXf9cI1ft5QM",
+  "authDomain": "livingstoneedu-7ef59.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "livingstoneedu-7ef59.firebasestorage.app",
+  "messagingSenderId": "538695521516",
+  "measurementId": "G-R0LQRTMJYS",
+  "databaseURL": "https://livingstoneedu-7ef59-default-rtdb.firebaseio.com"
 }

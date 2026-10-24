@@ -119,7 +119,17 @@ export async function hydrateStoresFromFirebase(): Promise<void> {
   }
 
   try {
-    const snap = await db.ref("live").get();
+    const timeoutPromise = new Promise<null>((resolve) =>
+      setTimeout(() => {
+        console.warn("[Firebase RTDB] Hydration probe timed out (2.5s) — continuing with local storage state.");
+        resolve(null);
+      }, 2500)
+    );
+    const snap = await Promise.race([db.ref("live").get(), timeoutPromise]);
+    if (!snap) {
+      isHydrationCompleted = true;
+      return;
+    }
     const liveData = snap.val();
     if (!liveData || typeof liveData !== "object") {
       console.log("[Firebase RTDB] No live data found in Firebase RTDB yet.");
@@ -226,6 +236,11 @@ export async function syncStoresToFirebase(options?: { allowEmptyStoreDeletion?:
   const db = getAdminDatabase();
   if (!db) {
     console.warn("[Firebase RTDB] syncStores: Admin Database unavailable — skipping sync");
+    return;
+  }
+
+  if (consecutiveFailures >= 3 && consecutiveFailures % 10 !== 0) {
+    consecutiveFailures++;
     return;
   }
 
