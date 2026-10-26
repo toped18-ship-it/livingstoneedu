@@ -9,15 +9,17 @@ declare global {
 export const createPool = () => {
   if (!global._postgresPool) {
     const isSsl = process.env.SQL_SSL === "true" || process.env.NODE_ENV === "production";
+    const parsedPort = process.env.SQL_PORT ? parseInt(process.env.SQL_PORT, 10) : 5432;
+    const sqlPort = !isNaN(parsedPort) && parsedPort > 0 ? parsedPort : 5432;
     global._postgresPool = new Pool({
       host: process.env.SQL_HOST || "localhost",
       user: process.env.SQL_USER || "postgres",
       password: process.env.SQL_PASSWORD || "",
       database: process.env.SQL_DB_NAME || "livingstoneedu-7ef59-2-database",
-      port: process.env.SQL_PORT ? parseInt(process.env.SQL_PORT) : 5432,
+      port: sqlPort,
       max: 10,
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 10000,
+      connectionTimeoutMillis: 5000,
       ssl: isSsl ? { rejectUnauthorized: false } : false,
     });
 

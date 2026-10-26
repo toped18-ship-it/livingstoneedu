@@ -71,10 +71,14 @@ export function getCloudSqlSyncStatus(): {
 }
 
 let schemaEnsured = false;
-let cloudSqlDisabled = false;
+let cloudSqlDisabled = !process.env.SQL_HOST;
 
 export async function ensureCloudSqlSchema(): Promise<void> {
   if (schemaEnsured || cloudSqlDisabled) return;
+  if (!process.env.SQL_HOST) {
+    cloudSqlDisabled = true;
+    return;
+  }
   const dbName = process.env.SQL_DB_NAME || "livingstoneedu-7ef59-2-database";
 
   try {

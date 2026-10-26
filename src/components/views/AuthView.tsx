@@ -648,20 +648,25 @@ export function AuthView({ onLoginSuccess, isDark, onToggleTheme, initialAdminVi
         })
       });
 
-      const data = await response.json();
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch (jsonErr) {
+        console.warn("Failed to parse login response:", jsonErr);
+      }
       setIsLoading(false);
 
-      if (data.success) {
+      if (response.ok && data?.success) {
         setSuccessMessage("✓ Authenticated as Super Admin & App Owner! Accessing HQ Control Panel...");
         setTimeout(() => {
           onLoginSuccess(data.userRole, data.redirectTab, data.user);
         }, 600);
       } else {
-        setErrorMessage(data.message || "Authentication failed. Check your credentials.");
+        setErrorMessage(data?.message || (response.status ? `Authentication failed (HTTP ${response.status})` : "Authentication failed. Check your credentials."));
       }
-    } catch (err) {
+    } catch (err: any) {
       setIsLoading(false);
-      setErrorMessage("Unable to connect to server. Please check your connection and try again.");
+      setErrorMessage(err?.message && !err.message.includes("fetch") ? `Error: ${err.message}` : "Unable to connect to server. Please check your connection and try again.");
     }
   };
 
@@ -685,20 +690,25 @@ export function AuthView({ onLoginSuccess, isDark, onToggleTheme, initialAdminVi
         })
       });
 
-      const data = await response.json();
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch (jsonErr) {
+        console.warn("Failed to parse login response:", jsonErr);
+      }
       setIsLoading(false);
 
-      if (data.success) {
-        setSuccessMessage(data.message);
+      if (response.ok && data?.success) {
+        setSuccessMessage(data.message || "✓ Login successful!");
         setTimeout(() => {
           onLoginSuccess(data.userRole, data.redirectTab, data.user);
         }, 600);
       } else {
-        setErrorMessage(data.message || "Authentication failed. Check your credentials.");
+        setErrorMessage(data?.message || (response.status ? `Authentication failed (HTTP ${response.status})` : "Authentication failed. Check your credentials."));
       }
-    } catch (err) {
+    } catch (err: any) {
       setIsLoading(false);
-      setErrorMessage("Unable to connect to server. Please check your connection and try again.");
+      setErrorMessage(err?.message && !err.message.includes("fetch") ? `Error: ${err.message}` : "Unable to connect to server. Please check your connection and try again.");
     }
   };
 
