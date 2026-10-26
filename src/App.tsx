@@ -124,46 +124,24 @@ export default function App() {
     }
   }, []);
 
-  // Internet Connectivity Enforcement: App is disabled offline per specification
+  // Resilient connectivity handling: keep app online unless browser explicitly reports offline
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const [checkingConnection, setCheckingConnection] = useState<boolean>(false);
-  const offlineFailsRef = useRef<number>(0);
 
   useEffect(() => {
-    const handleOnline = () => {
-      offlineFailsRef.current = 0;
-      setIsOnline(true);
-    };
-    const handleOffline = () => {
-      offlineFailsRef.current++;
-      if (offlineFailsRef.current >= 2) setIsOnline(false);
-    };
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
 
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
 
-    // Periodic heartbeat to verify server reachability with 3-strike resilience
-    const interval = setInterval(() => {
-      fetch("/api/health", { method: "GET", cache: "no-store" })
-        .then((res) => {
-          if (res.ok) {
-            offlineFailsRef.current = 0;
-            setIsOnline(true);
-          } else {
-            offlineFailsRef.current++;
-            if (offlineFailsRef.current >= 3) setIsOnline(false);
-          }
-        })
-        .catch(() => {
-          offlineFailsRef.current++;
-          if (offlineFailsRef.current >= 3) setIsOnline(false);
-        });
-    }, 20000);
+    if (typeof navigator !== "undefined" && typeof navigator.onLine === "boolean") {
+      setIsOnline(navigator.onLine);
+    }
 
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
-      clearInterval(interval);
     };
   }, []);
 
